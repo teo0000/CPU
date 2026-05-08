@@ -1,21 +1,149 @@
-Il problema è semplice: **stai eseguendo il comando nel posto sbagliato**.
-**Verilator** è installato nel tuo **ambiente Linux (WSL)**, ma tu stai usando **PowerShell di Windows**, dove il comando `verilator` non esiste.
 
-Infatti prima avevi eseguito il progetto qui:
+Perfetto. Se hai già eseguito una volta Verilator e hai già `obj_dir`, allora **non devi rifare sempre tutti i passaggi da zero**.
 
-```
-acerlinux@LAPTOP-D5L4HT83:/mnt/c/Users/ACER/Desktop/universita/tesi$
-```
-
-quello è **Linux (WSL)**.
+Da quel punto in poi il flusso normale diventa questo.
 
 ---
 
-# ✅ Come eseguire correttamente il progetto
+# 🔹 Caso 1 — Hai modificato SOLO il Verilog (`.v`)
 
-## 1️⃣ Apri il terminale Linux (WSL)
+Esempio:
 
-Non usare PowerShell.
+* hai cambiato `cpu.v`
+* hai modificato `alu.v`
+* hai aggiornato `testbench.v`
+
+Allora fai:
+
+```bash
+wsl
+cd /mnt/c/Users/ACER/Desktop/universita/tesi
+verilator -Wall --cc *.v --exe
+cd obj_dir
+make -f Vtestbench.mk
+./Vtestbench
+```
+
+Perché:
+
+1. Verilator deve rigenerare i file C++
+2. make deve ricompilare
+3. poi esegui la simulazione
+
+---
+
+# 🔹 Caso 2 — NON hai cambiato nulla
+
+Se vuoi solo rilanciare la simulazione:
+
+```bash
+wsl
+cd /mnt/c/Users/ACER/Desktop/universita/tesi/obj_dir
+./Vtestbench
+```
+
+e basta.
+
+---
+
+# 🔹 Caso 3 — Hai già compilato e hai modificato SOLO il testbench leggermente
+
+Spesso puoi fare direttamente:
+
+```bash
+cd obj_dir
+make -f Vtestbench.mk
+./Vtestbench
+```
+
+ma dipende da cosa hai cambiato.
+
+Se il Makefile non rileva bene le modifiche, rifai anche Verilator.
+
+---
+
+# 🔹 Come capire se `obj_dir` è valido
+
+Dentro `obj_dir` dovresti avere cose tipo:
+
+```text
+Vtestbench
+Vtestbench.mk
+Vtestbench.cpp
+```
+
+Puoi controllare con:
+
+```bash
+ls obj_dir
+```
+
+---
+
+# 🔹 Se `./Vtestbench` non esiste
+
+Allora probabilmente:
+
+* la compilazione non è finita
+* oppure `make` ha dato errore
+
+In quel caso rifai:
+
+```bash
+verilator -Wall --cc *.v --exe
+cd obj_dir
+make -f Vtestbench.mk
+```
+
+---
+
+# 🔹 Regola pratica per la tua tesi
+
+## Durante sviluppo normale:
+
+```bash
+cd obj_dir
+make -f Vtestbench.mk
+./Vtestbench
+```
+
+## Dopo modifiche importanti alla struttura Verilog:
+
+```bash
+verilator -Wall --cc *.v --exe
+```
+
+prima del `make`.
+
+---
+
+# 🔹 Cosa farai realisticamente adesso
+
+Il ciclo reale della tesi sarà:
+
+```text
+Modifico CPU
+     ↓
+make
+     ↓
+./Vtestbench
+     ↓
+guardo output
+     ↓
+correggo bug
+     ↓
+ripeto
+```
+
+Questa iterazione continua è il workflow tipico di progettazione hardware con Verilator.
+
+
+
+#  Come eseguire correttamente il progetto
+
+## 1️ Apri il terminale Linux (WSL)
+
+Non si usa  PowerShell. ma 
 
 Apri:
 
@@ -37,15 +165,14 @@ acerlinux@LAPTOP-D5L4HT83:~$
 
 ---
 
-# 2️⃣ Vai nella cartella del progetto
-
+#Bisogna andare nella cartella del progetto
 ```bash
-cd /mnt/c/Users/ACER/Desktop/universita/tesi
+cd /mnt/c/Users/ACER/../../tesi
 ```
 
 ---
 
-# 3️⃣ Controlla che i file ci siano
+# 3️⃣  Si Controlla che i file ci siano tutti anceh quelli necessari
 
 ```bash
 ls
@@ -62,7 +189,7 @@ obj_dir
 
 ---
 
-# 4️⃣ Compila con Verilator
+# 4️ Poi si passa allaCompilazione con Verilator
 
 ```bash
 verilator -Wall --cc testbench.v --exe
