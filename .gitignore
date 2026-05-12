@@ -1,5 +1,0 @@
-# Verilator generated files
-obj_dir/
-*.vcd
-*.log
-.vscode/
