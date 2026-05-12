@@ -6,9 +6,9 @@ Questo repository contiene il codice sorgente e l'ambiente di simulazione per un
 
 Il sistema è basato su un approccio di **co-simulazione hardware/software**. Il core del processore, descritto in linguaggio Verilog, viene compilato tramite **Verilator** in un modello C++ ad alte prestazioni. Il testbench, scritto in C++, funge da wrapper per gestire l'esecuzione, l'input assembly e il monitoraggio dei segnali interni.
 
-### Componenti principali:
+### Caratteristiche principali:
 *   **Core RTL**: Implementazione dei moduli critici (ALU, Register File, Control Unit, Program Counter).
-*   **Interprete Assembly**: Un parser personalizzato integrato nel testbench C++ in grado di decodificare mnemonici assembly in codice binario RISC-V compatibile.
+*   **Interprete Assembly**: Parser robusto con supporto per mnemonici standard, gestione dei commenti (tramite `#`) e supporto per valori immediati sia in formato decimale che esadecimale (es. `0x2A`).
 *   **Monitor di Stato**: Sistema di log per il tracciamento dei registri (`x0`-`x31`) e dei segnali di controllo durante ogni ciclo di clock.
 *   **Generatore di Tracce**: Esportazione automatica in formato VCD per l'analisi temporale dei segnali.
 
@@ -27,7 +27,7 @@ Il simulatore supporta attualmente le seguenti classi di istruzioni:
 | :--- | :--- | :--- |
 | **R-Type** | `ADD`, `SUB`, `AND`, `OR`, `XOR` | Operazioni aritmetico-logiche tra registri. |
 | **I-Type** | `ADDI` (alias `LI`) | Operazioni con operando immediato a 12 bit. |
-| **System** | `NOP`, `HALT` / `END` | Gestione del flusso e terminazione della simulazione. |
+| **System** | `NOP`, `HALT` / `END` | Istruzioni di controllo e terminazione del programma. |
 
 ## Guida all'utilizzo
 
@@ -43,7 +43,7 @@ make -C obj_dir -f Vtestbench.mk
 ```
 
 ### 2. Esecuzione e Test
-Il simulatore può essere avviato in modalità interattiva per testare brevi sequenze di codice:
+Il simulatore supporta due modalità: **Interattiva** (input manuale) e **File** (caricamento script `.asm`). Per avviare la modalità interattiva:
 
 ```bash
 ./obj_dir/Vtestbench
