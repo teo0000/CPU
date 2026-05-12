@@ -1,0 +1,10 @@
+# Verilator output
+obj_dir/
+
+# Simulation traces
+*.vcd
+
+# Compiled binaries and objects
+*.o
+*.d
+Vtestbench
