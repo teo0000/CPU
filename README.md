@@ -1,4 +1,23 @@
+i prerequisiti principali sono i seguenti:
 
+1. Strumenti Software (Toolchain)
+Verilator: È il componente fondamentale. È un simulatore di Verilog open-source che "traduce" il codice hardware (Verilog/SystemVerilog) in modelli C++ (come quelli inclusi tramite Vtestbench.h).
+Compilatore C++: Necessiti di un compilatore che supporti almeno lo standard C++11 (meglio C++17), come GCC (via MinGW-w64 o MSYS2 su Windows) o Clang.
+Sitema di Build: Solitamente si usa GNU Make, che viene invocato da Verilator per compilare i file C++ generati e il tuo sim_main.cpp.
+GTKWave: Indispensabile per visualizzare il file trace.vcd generato dalla simulazione. Ti permette di vedere le forme d'onda dei segnali della CPU (clock, registri, segnali di controllo).
+2. File Sorgente Hardware
+Il file C++ da solo non può funzionare senza la controparte hardware. Ti servono:
+
+Codice Verilog/SystemVerilog: Un file (presumibilmente chiamato testbench.v o simile) che definisca il modulo testbench. Questo modulo deve contenere la logica della CPU RISC-V e la memoria/registri che il file C++ tenta di leggere (usando top->rootp->testbench__DOT__registers).
+3. Ambiente di Sviluppo (Dato il percorso file)
+Dato che il percorso è c:\Users\ACER\Desktop\universita\tesi\, sembra che tu stia lavorando su Windows. Per far girare Verilator su Windows, i prerequisiti comuni sono:
+
+WSL2 (Windows Subsystem for Linux): Spesso la scelta più semplice per installare Verilator.
+In alternativa, un ambiente MSYS2 configurato con i pacchetti per Verilator e il compilatore GCC.
+4. Conoscenze Teoriche
+Architettura RISC-V (RV32I): Il codice implementa la codifica di istruzioni come ADD, SUB, LI (addi), ecc. Devi conoscere il formato delle istruzioni R-type e I-type.
+C++ Base: Per comprendere come il testbench interagisce con il modello simulato e come viene gestito l'input dell'utente.
+Verilog: Per la parte di progettazione della CPU che viene poi pilotata da questo file C++.
 Perfetto. Se hai già eseguito una volta Verilator e hai già `obj_dir`, allora **non devi rifare sempre tutti i passaggi da zero**.
 
 Da quel punto in poi il flusso normale diventa questo.
